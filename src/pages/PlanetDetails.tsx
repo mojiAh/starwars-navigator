@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { fetchJson } from '../api/swapi';
 import type { Planet } from './types';
-
-async function fetchJson(url: string) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  return data;
-}
 
 export default function PlanetDetails() {
     const [planet, setPlanet] = useState<Planet | null>(null);
@@ -63,12 +57,12 @@ export default function PlanetDetails() {
             <h3>Movies</h3>
             {filmsData.length === 0 ? <div>Loading movies…</div> :
                 <ul>{filmsData.map((film, i) => <li key={i}>{film.title || 'Unknown'}</li>)}
-            </ul>}
+                </ul>}
 
             <h3>Residents</h3>
             {residentsData.length === 0 ? <div>Loading Residents…</div> :
                 <ul>{residentsData.map((resident, i) => <li key={i}>{resident.name || 'Unknown'}</li>)}
-            </ul>}
+                </ul>}
         </div>
     );
 }
