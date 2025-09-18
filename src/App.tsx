@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Planets from './pages/Planet';
 import './App.css'
 
 
@@ -9,7 +10,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Navigate to="/planets" replace />} />
-        <Route path="/planets" element={<div>Planets</div>} />
+        <Route path="/planets" element={<Planets />} />
         <Route path="/planets/:id" element={<div>Planet Details</div>} />
         <Route path="/characters" element={<div>Characters</div>} />
         <Route path="/characters/:id" element={<div>Character Details</div>} />
