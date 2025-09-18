@@ -79,16 +79,21 @@ export default function PlanetDetails() {
                 </ul>}
 
             <h3>Residents</h3>
-            {residentsData.length === 0 ? <div>Loading Residents…</div> :
-                <ul>
-                    {residentsData.map((resident, i) =>
-                        "error" in resident ? (
-                        <li key={i}>Error loading resident</li>
-                        ) : (
-                        <li key={i}>{resident.name}</li>
-                        )
-                    )}
-                </ul>}
+            {
+                planet.residents.length === 0 ? (
+                    <div>No known residents</div>
+                ) : 
+                residentsData.length === 0 ? <div>Loading Residents…</div> :
+                    <ul>
+                        {residentsData.map((resident, i) =>
+                            "error" in resident ? (
+                            <li key={i}>Error loading resident</li>
+                            ) : (
+                            <li key={i}>{resident.name}</li>
+                            )
+                        )}
+                    </ul>
+            }
         </div>
     );
 }
