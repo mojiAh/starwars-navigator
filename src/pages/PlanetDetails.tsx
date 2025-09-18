@@ -2,9 +2,18 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { Planet } from './types';
 
+async function fetchJson(url: string) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  return data;
+}
+
 export default function PlanetDetails() {
     const [planet, setPlanet] = useState<Planet | null>(null);
     const [loading, setLoading] = useState(true);
+    const [residentsData, setResidentsData] = useState<any[]>([]);
+    const [filmsData, setFilmsData] = useState<any[]>([]);
     const [error, setError] = useState<Error | null>(null);
     const { id } = useParams();
     const planetUrl = `https://swapi.py4e.com/api/planets/${id}/`;
@@ -29,6 +38,17 @@ export default function PlanetDetails() {
         fetchPlanetDetails();
     }, []);
 
+    useEffect(() => {
+        let alive = true;
+        if (!planet) return;
+        // fetch residents and films concurrently
+        Promise.all(planet.residents.map(url => fetchJson(url).catch(e => ({ error: true }))))
+            .then(arr => { if (!alive) return; setResidentsData(arr); });
+        Promise.all(planet.films.map(url => fetchJson(url).catch(e => ({ error: true }))))
+            .then(arr => { if (!alive) return; setFilmsData(arr); });
+        return () => { alive = false; };
+    }, [planet]);
+
     if (loading) return <div>Loading planet…</div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!planet) return <div>No planet found</div>;
@@ -41,14 +61,14 @@ export default function PlanetDetails() {
             <div><strong>Climate:</strong> {planet.climate}</div>
 
             <h3>Movies</h3>
-            <ul>
-                {planet.films.map((film, i) => <li key={i}>{film || 'Unknown'}</li>)}
-            </ul>
+            {filmsData.length === 0 ? <div>Loading movies…</div> :
+                <ul>{filmsData.map((film, i) => <li key={i}>{film.title || 'Unknown'}</li>)}
+            </ul>}
 
             <h3>Residents</h3>
-            <ul>
-                {planet.residents.map((resident, i) => <li key={i}>{resident || 'Unknown'}</li>)}
-            </ul>
+            {residentsData.length === 0 ? <div>Loading Residents…</div> :
+                <ul>{residentsData.map((resident, i) => <li key={i}>{resident.name || 'Unknown'}</li>)}
+            </ul>}
         </div>
     );
 }
