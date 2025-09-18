@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchJson } from '../api/swapi';
-import type { Planet } from './types';
+import type { Planet, Character, Film } from '../types';
 
 export default function PlanetDetails() {
     const [planet, setPlanet] = useState<Planet | null>(null);
     const [loading, setLoading] = useState(true);
-    const [residentsData, setResidentsData] = useState<any[]>([]);
-    const [filmsData, setFilmsData] = useState<any[]>([]);
+    const [residentsData, setResidentsData] = useState<(Character | { error: true })[]>([]);
+    const [filmsData, setFilmsData] = useState<(Film | { error: true })[]>([]);
     const [error, setError] = useState<Error | null>(null);
     const { id } = useParams();
     const planetUrl = `https://swapi.py4e.com/api/planets/${id}/`;
@@ -35,12 +35,24 @@ export default function PlanetDetails() {
     useEffect(() => {
         let alive = true;
         if (!planet) return;
-        // fetch residents and films concurrently
-        Promise.all(planet.residents.map(url => fetchJson(url).catch(e => ({ error: true }))))
-            .then(arr => { if (!alive) return; setResidentsData(arr); });
-        Promise.all(planet.films.map(url => fetchJson(url).catch(e => ({ error: true }))))
-            .then(arr => { if (!alive) return; setFilmsData(arr); });
-        return () => { alive = false; };
+
+        Promise.all(
+            planet.residents.map((url) =>
+                (fetchJson(url).catch(() => ({ error: true })) as Promise<Character | { error: true }>)))
+            .then((arr) => { 
+                if (alive) setResidentsData(arr);
+            });
+
+        Promise.all(
+            planet.films.map((url) =>
+                (fetchJson(url).catch(() => ({ error: true })) as Promise<Film | { error: true }>)))
+            .then((arr) => {
+                if (alive) setFilmsData(arr);
+            });
+
+        return () => {
+            alive = false;
+        };
     }, [planet]);
 
     if (loading) return <div>Loading planet…</div>;
@@ -56,12 +68,26 @@ export default function PlanetDetails() {
 
             <h3>Movies</h3>
             {filmsData.length === 0 ? <div>Loading movies…</div> :
-                <ul>{filmsData.map((film, i) => <li key={i}>{film.title || 'Unknown'}</li>)}
+                <ul>
+                    {filmsData.map((film, i) =>
+                        "error" in film ? (
+                        <li key={i}>Error loading movie</li>
+                        ) : (
+                        <li key={i}>{film.title}</li>
+                        )
+                    )}
                 </ul>}
 
             <h3>Residents</h3>
             {residentsData.length === 0 ? <div>Loading Residents…</div> :
-                <ul>{residentsData.map((resident, i) => <li key={i}>{resident.name || 'Unknown'}</li>)}
+                <ul>
+                    {residentsData.map((resident, i) =>
+                        "error" in resident ? (
+                        <li key={i}>Error loading resident</li>
+                        ) : (
+                        <li key={i}>{resident.name}</li>
+                        )
+                    )}
                 </ul>}
         </div>
     );
