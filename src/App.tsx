@@ -1,11 +1,13 @@
+import { BrowserRouter as Router } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import './App.css'
 
-function App() {
 
+function App() {
   return (
-    <>
-      <h1 className='text-3xl font-bold underlinegray-100'>Star Wars Navigator</h1>
-    </>
+    <Router>
+      <Navbar />
+    </Router>
   )
 }
 
