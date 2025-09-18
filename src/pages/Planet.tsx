@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import type { Planet } from './types';
 
 export default function Planets() {
+    
     const [data, setData] = useState<{ results: Planet[], count: number, next: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -32,9 +34,10 @@ export default function Planets() {
       {loading && <div>Loading planets…</div>}
       {error && <div>Error loading: {error.message}</div>}
       {results.map(p => {
+        const id = p.url.split('/').filter(Boolean).pop();
         return (
           <div key={p.name} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
-            <div>{p.name}</div>
+            <Link to={`/planets/${id}`}><strong>{p.name}</strong></Link>
             <div>Population: {p.population}</div>
           </div>
         );
