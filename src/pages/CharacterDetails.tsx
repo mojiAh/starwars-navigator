@@ -69,7 +69,7 @@ export default function CharacterDetails() {
         };
     }, [character]);
 
-    if (loading) return <div>Loading planet…</div>;
+    if (loading) return <div>Loading character…</div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!character) return <div>No character found</div>;
 
