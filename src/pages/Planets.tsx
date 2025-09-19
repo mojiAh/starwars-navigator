@@ -1,31 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import type { Planet } from '../types';
+import { usePlanets } from '../hooks/useSwapi';
+
 
 export default function Planets() {
-    
-    const [data, setData] = useState<{ results: Planet[], count: number, next: string } | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
-
-    useEffect(() => {
-        async function fetchPlanets() {
-            try {
-                setLoading(true);
-                const response = await fetch('https://swapi.py4e.com/api/planets/');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const json = await response.json();
-                setData(json);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchPlanets();
-    }, []);
+  const { data, loading, error } = usePlanets();
   let results = data?.results || [];
 
   return (
@@ -41,7 +19,7 @@ export default function Planets() {
             <div>Population: {p.population}</div>
           </div>
         );
-      })}  
+      })}
     </div>
   );
 }

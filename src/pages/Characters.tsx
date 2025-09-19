@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import type { Character, Planet } from '../types';
+
 import { fetchJson } from '../api/swapi';
+import { useCharacters } from '../hooks/useSwapi';
+
+import type { Planet } from '../types';
 
 const PlanetData = ({ homeworld }: { homeworld: string }) => {
     const [planet, setPlanet] = useState<Planet | { error: true } | null>(null);
@@ -27,28 +30,7 @@ const PlanetData = ({ homeworld }: { homeworld: string }) => {
 
 export default function Characters() {
 
-    const [data, setData] = useState<{ results: Character[], count: number, next: string } | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
-
-    useEffect(() => {
-        async function fetchCharacters() {
-            try {
-                setLoading(true);
-                const response = await fetch('https://swapi.py4e.com/api/people/');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const json = await response.json();
-                setData(json);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchCharacters();
-    }, []);
+    const { data, loading, error } = useCharacters();
     let results = data?.results || [];
 
     return (
