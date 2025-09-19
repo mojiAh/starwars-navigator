@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { fetchJson } from '../api/swapi';
-import type { Planet, Character, Starship } from '../types';
+import type { Planet, Character, Starship, SwapiResponse } from '../types';
 
 async function getPlanets() {
-    return fetchJson<{ results: Planet[], count: number, next: string }>('https://swapi.py4e.com/api/planets/');
+    return fetchJson<SwapiResponse<Planet>>('https://swapi.py4e.com/api/planets/');
 }
 
 async function getCharacters() {
-    return fetchJson<{ results: Character[], count: number, next: string }>('https://swapi.py4e.com/api/people/');
+    return fetchJson<SwapiResponse<Character>>('https://swapi.py4e.com/api/people/');
 }
 
 async function getStarships() {
-    return fetchJson<{ results: Starship[], count: number, next: string }>('https://swapi.py4e.com/api/starships/');
+    return fetchJson<SwapiResponse<Starship>>('https://swapi.py4e.com/api/starships/');
 }
 
 async function getPlanetByUrl(url: string) {
@@ -27,7 +27,7 @@ async function getStarshipByUrl(url: string) {
 }
 
 export function usePlanets() {
-    const [data, setData] = useState<{ results: Planet[], count: number, next: string } | null>(null);
+    const [data, setData] = useState<SwapiResponse<Planet> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -52,7 +52,7 @@ export function usePlanets() {
 }
 
 export function useCharacters() {
-    const [data, setData] = useState<{ results: Character[], count: number, next: string } | null>(null);
+    const [data, setData] = useState<SwapiResponse<Character> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -77,7 +77,7 @@ export function useCharacters() {
 }
 
 export function useStarships() {
-    const [data, setData] = useState<{ results: Starship[], count: number, next: string } | null>(null);
+    const [data, setData] = useState<SwapiResponse<Starship> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
