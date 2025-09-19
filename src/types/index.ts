@@ -1,18 +1,18 @@
 export interface Planet {
-    name: string;
-    population: string;
-    climate: string;
-    films: string[];
-    residents: string[];
-    rotation_period: string;
-    orbital_period: string;
-    diameter: string;
-    gravity: string;
-    terrain: string;
-    surface_water: string;
-    created: string;
-    edited: string;
-    url: string;
+  name: string;
+  population: string;
+  climate: string;
+  films: string[];
+  residents: string[];
+  rotation_period: string;
+  orbital_period: string;
+  diameter: string;
+  gravity: string;
+  terrain: string;
+  surface_water: string;
+  created: string;
+  edited: string;
+  url: string;
 }
 
 export interface Character {
@@ -25,5 +25,13 @@ export interface Character {
 
 export interface Film {
   title: string;
+  url: string;
+}
+
+export interface Starship {
+  name: string;
+  model: string;
+  crew: string;
+  films: string[];
   url: string;
 }

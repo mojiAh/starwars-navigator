@@ -4,14 +4,17 @@ import { fetchJson } from '../api/swapi';
 import type { Planet, Character, Film } from '../types';
 
 export default function PlanetDetails() {
+    const navigate = useNavigate();
     const [planet, setPlanet] = useState<Planet | null>(null);
+
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+
     const [residentsData, setResidentsData] = useState<(Character | { error: true })[]>([]);
     const [filmsData, setFilmsData] = useState<(Film | { error: true })[]>([]);
-    const [error, setError] = useState<Error | null>(null);
+
     const { id } = useParams();
     const planetUrl = `https://swapi.py4e.com/api/planets/${id}/`;
-    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchPlanetDetails() {
