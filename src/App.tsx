@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './components/Navbar';
 import Planets from './pages/Planets';
 import Characters from './pages/Characters';
+import Starships from './pages/Starships';
 import PlanetDetails from './pages/PlanetDetails';
 import CharacterDetails from './pages/CharacterDetails';
 import StarshipDetails from './pages/StarshipDetails';
@@ -18,7 +19,7 @@ function App() {
         <Route path="/planets/:id" element={<PlanetDetails />} />
         <Route path="/characters" element={<Characters />} />
         <Route path="/characters/:id" element={<CharacterDetails />} />
-        <Route path="/starships" element={<div>Starships</div>} />
+        <Route path="/starships" element={<Starships />} />
         <Route path="/starships/:id" element={<StarshipDetails />} />
       </Routes>
     </Router>
