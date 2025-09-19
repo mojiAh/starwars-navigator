@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { getPlanets, getCharacters, getStarships, getPlanetByUrl, getCharacterByUrl, getStarshipByUrl } from '../api/swapi';
 import type { Planet, Character, Starship, SwapiResponse } from '../types';
 
-export function usePlanets() {
+export function usePlanets({ page = 1 }: { page?: number; }) {
     const [data, setData] = useState<SwapiResponse<Planet> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -11,7 +11,7 @@ export function usePlanets() {
     useEffect(() => {
         let alive = true;
         setLoading(true);
-        getPlanets()
+        getPlanets({ page })
             .then((d) => {
                 if (alive) setData(d);
             })
@@ -24,7 +24,7 @@ export function usePlanets() {
         return () => {
             alive = false;
         };
-    }, []);
+    }, [page]);
     return { data, loading, error };
 }
 

@@ -1,10 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { usePlanets } from '../hooks/useSwapi';
 
-
 export default function Planets() {
-  const { data, loading, error } = usePlanets();
+  const [params, setParams] = useSearchParams();
+  const page = parseInt(params.get("page") || "1", 10);
+
+  const { data, loading, error } = usePlanets({ page });
   let results = data?.results || [];
+
+  const goPage = (newPage: number) => {
+    setParams({ page: String(newPage) });
+  };
 
   return (
     <div>
@@ -20,6 +26,15 @@ export default function Planets() {
           </div>
         );
       })}
+      <div style={{ marginTop: 12 }}>
+        <button onClick={() => goPage(Math.max(1, page - 1))} disabled={!data?.previous}>
+          Previous
+        </button>
+        <span style={{ margin: "0 8px" }}>Page {page}</span>
+        <button onClick={() => goPage(page + 1)} disabled={!data?.next}>
+          Next
+        </button>
+      </div>
     </div>
   );
 }

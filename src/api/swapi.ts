@@ -15,8 +15,8 @@ export function clearCache() {
   simpleCache.clear();
 }
 
-export async function getPlanets() {
-  return fetchJson<SwapiResponse<Planet>>('https://swapi.py4e.com/api/planets/');
+export async function getPlanets({ page = 1 }: { page?: number }) {
+  return fetchJson<SwapiResponse<Planet>>(`https://swapi.py4e.com/api/planets/${page > 1 ? `?page=${page}` : ''}`);
 }
 
 export async function getCharacters() {
