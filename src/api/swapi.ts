@@ -19,12 +19,12 @@ export async function getPlanets({ page = 1 }: { page?: number }) {
   return fetchJson<SwapiResponse<Planet>>(`https://swapi.py4e.com/api/planets/${page > 1 ? `?page=${page}` : ''}`);
 }
 
-export async function getCharacters() {
-  return fetchJson<SwapiResponse<Character>>('https://swapi.py4e.com/api/people/');
+export async function getCharacters({ page = 1 }: { page?: number }) {
+  return fetchJson<SwapiResponse<Character>>(`https://swapi.py4e.com/api/people/${page > 1 ? `?page=${page}` : ''}`);
 }
 
-export async function getStarships() {
-  return fetchJson<SwapiResponse<Starship>>('https://swapi.py4e.com/api/starships/');
+export async function getStarships({ page = 1 }: { page?: number }) {
+  return fetchJson<SwapiResponse<Starship>>(`https://swapi.py4e.com/api/starships/${page > 1 ? `?page=${page}` : ''}`);
 }
 
 export async function getPlanetByUrl(url: string) {

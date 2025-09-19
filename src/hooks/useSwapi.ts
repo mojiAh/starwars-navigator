@@ -28,7 +28,7 @@ export function usePlanets({ page = 1 }: { page?: number; }) {
     return { data, loading, error };
 }
 
-export function useCharacters() {
+export function useCharacters({ page = 1 }: { page?: number; }) {
     const [data, setData] = useState<SwapiResponse<Character> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -36,7 +36,7 @@ export function useCharacters() {
     useEffect(() => {
         let alive = true;
         setLoading(true);
-        getCharacters()
+        getCharacters({ page })
             .then((d) => {
                 if (alive) setData(d);
             })
@@ -49,11 +49,11 @@ export function useCharacters() {
         return () => {
             alive = false;
         };
-    }, []);
+    }, [page]);
     return { data, loading, error };
 }
 
-export function useStarships() {
+export function useStarships({ page = 1 }: { page?: number; }) {
     const [data, setData] = useState<SwapiResponse<Starship> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -61,7 +61,7 @@ export function useStarships() {
     useEffect(() => {
         let alive = true;
         setLoading(true);
-        getStarships()
+        getStarships({ page })
             .then((d) => {
                 if (alive) setData(d);
             })
@@ -74,7 +74,7 @@ export function useStarships() {
         return () => {
             alive = false;
         };
-    }, []);
+    }, [page]);
     return { data, loading, error };
 }
 

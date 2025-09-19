@@ -1,10 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { useStarships } from '../hooks/useSwapi';
 
 export default function Starships() {
-    const { data, loading, error } = useStarships();
+    const [params, setParams] = useSearchParams();
+    const page = parseInt(params.get("page") || "1", 10);
+
+    const { data, loading, error } = useStarships({ page });
     let results = data?.results || [];
+
+    const goPage = (newPage: number) => {
+        setParams({ page: String(newPage) });
+    };
 
     return (
         <div>
@@ -20,6 +27,15 @@ export default function Starships() {
                     </div>
                 );
             })}
+            <div style={{ marginTop: 12 }}>
+                <button onClick={() => goPage(Math.max(1, page - 1))} disabled={!data?.previous}>
+                    Previous
+                </button>
+                <span style={{ margin: "0 8px" }}>Page {page}</span>
+                <button onClick={() => goPage(page + 1)} disabled={!data?.next}>
+                    Next
+                </button>
+            </div>
         </div>
     );
 }
