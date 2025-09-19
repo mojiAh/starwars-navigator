@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-import { getPlanets, getCharacters, getStarships, getPlanetByUrl, getCharacterByUrl, getStarshipByUrl } from '../api/swapi';
+import { getPlanets, getCharacters, getStarships, getPlanetByUrl, getCharacterByUrl, getStarshipByUrl, fetchJson } from '../api/swapi';
 import type { Planet, Character, Starship, SwapiResponse } from '../types';
 
 export function usePlanets({ page = 1, search = "" }: { page?: number; search?: string; }) {
@@ -166,4 +166,39 @@ export function useStarshipDetails(id?: string) {
     }, [id]);
 
     return { data, loading, error };
+}
+
+export function usePlanetNames(urls: string[]) {
+    const [planetCache, setPlanetCache] = useState<Map<string, string>>(new Map());
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!urls || urls.length === 0) return;
+
+        const missing = urls.filter((u) => !planetCache.has(u));
+        if (missing.length === 0) return;
+
+        setLoading(true);
+        Promise.all(
+            missing.map((url) =>
+                (fetchJson(url) as Promise<Planet>)
+                    .then((p) => ({ url, name: p.name }))
+                    .catch(() => ({ url, name: "Unknown" }))
+            )
+        ).then((results) => {
+            setPlanetCache((prev) => {
+                const copy = new Map(prev);
+                results.forEach(({ url, name }) => copy.set(url, name));
+                return copy;
+            });
+            setLoading(false);
+        });
+    }, [urls]);
+
+    const getName = useCallback(
+        (url: string) => planetCache.get(url) ?? null,
+        [planetCache]
+    );
+
+    return { getName, loading };
 }

@@ -1,10 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
-import { fetchJson } from '../api/swapi';
-import { useCharacters } from '../hooks/useSwapi';
-
-import type { Planet } from '../types';
+import { useCharacters, usePlanetNames } from '../hooks/useSwapi';
 
 function SortAndSearch({
     sort,
@@ -34,43 +30,11 @@ function SortAndSearch({
     );
 }
 
-const PlanetData = ({ homeworld, cachedName }: { homeworld: string; cachedName?: string }) => {
-    const [planet, setPlanet] = useState<Planet | { error: true } | null>(null);
-    useEffect(() => {
-        if (!homeworld || cachedName) return;
-        fetchJson(homeworld)
-            .then((data) => {
-                setPlanet(data as Planet);
-            })
-            .catch(() => {
-                setPlanet({ error: true });
-            });
-    }, [homeworld, cachedName]);
-
-    const displayName =
-        cachedName ||
-        (planet && !("error" in planet) ? planet.name : undefined);
-    return <div><strong>Homeworld:</strong>
-        {!displayName
-            ? "Loading…"
-            : "error" in (planet || {})
-                ? "Error loading planet"
-                : (
-                    <Link to={`/planets/${homeworld.split("/").filter(Boolean).pop()}`}>
-                        {displayName}
-                    </Link>
-                )}
-    </div>
-}
-
 export default function Characters() {
     const [params, setParams] = useSearchParams();
     const page = parseInt(params.get("page") || "1", 10);
     const sort = params.get("sort") || "name";
     const search = params.get("search") || "";
-
-    // URL -> planet name
-    const [planetCache, setPlanetCache] = useState<Map<string, string>>(new Map());
 
     const { data, loading, error } = useCharacters({ page, search });
 
@@ -97,29 +61,14 @@ export default function Characters() {
     };
 
     let results = data?.results || [];
-
-    useEffect(() => {
-        if (!results) return;
-
-        results.forEach((char) => {
-            const url = char.homeworld;
-            if (!planetCache.has(url)) {
-                (fetchJson(url) as Promise<Planet>)
-                    .then((planet) => {
-                        setPlanetCache((prev) => new Map(prev).set(url, planet.name));
-                    })
-                    .catch(() => {
-                        setPlanetCache((prev) => new Map(prev).set(url, "Unknown"));
-                    });
-            }
-        });
-    }, [results]);
+    const homeworlds = results.map(c => c.homeworld).filter(Boolean) as string[];
+    const { getName } = usePlanetNames(homeworlds);
 
     if (sort === "name") results = [...results].sort((a, b) => a.name.localeCompare(b.name));
     if (sort === "homeworld") {
         results = [...results].sort((a, b) => {
-            const nameA = planetCache.get(a.homeworld) || "zzz";
-            const nameB = planetCache.get(b.homeworld) || "zzz";
+            const nameA = getName(a.homeworld) || "zzz";
+            const nameB = getName(b.homeworld) || "zzz";
             return nameA.localeCompare(nameB);
         });
     }
@@ -132,10 +81,21 @@ export default function Characters() {
             {error && <div>Error loading: {error.message}</div>}
             {results.map(c => {
                 const id = c.url.split('/').filter(Boolean).pop();
+                const name = getName(c.homeworld);
                 return (
                     <div key={c.name} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
                         <Link to={`/characters/${id}`}><strong>{c.name}</strong></Link>
-                        <PlanetData homeworld={c.homeworld} cachedName={planetCache.get(c.homeworld)} />
+                        <div><strong>Homeworld:</strong>
+                            {!name
+                                ? "Loading…"
+                                : name === "Unknown"
+                                    ? "Error loading planet"
+                                    : (
+                                        <Link to={`/planets/${c.homeworld.split("/").filter(Boolean).pop()}`}>
+                                            {name}
+                                        </Link>
+                                    )}
+                        </div>
                     </div>
                 );
             })}
