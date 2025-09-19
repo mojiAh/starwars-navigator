@@ -1,30 +1,7 @@
 import { useState, useEffect } from 'react';
-import { fetchJson } from '../api/swapi';
+
+import { getPlanets, getCharacters, getStarships, getPlanetByUrl, getCharacterByUrl, getStarshipByUrl } from '../api/swapi';
 import type { Planet, Character, Starship, SwapiResponse } from '../types';
-
-async function getPlanets() {
-    return fetchJson<SwapiResponse<Planet>>('https://swapi.py4e.com/api/planets/');
-}
-
-async function getCharacters() {
-    return fetchJson<SwapiResponse<Character>>('https://swapi.py4e.com/api/people/');
-}
-
-async function getStarships() {
-    return fetchJson<SwapiResponse<Starship>>('https://swapi.py4e.com/api/starships/');
-}
-
-async function getPlanetByUrl(url: string) {
-    return fetchJson<Planet>(url);
-}
-
-async function getCharacterByUrl(url: string) {
-    return fetchJson<Character>(url);
-}
-
-async function getStarshipByUrl(url: string) {
-    return fetchJson<Starship>(url);
-}
 
 export function usePlanets() {
     const [data, setData] = useState<SwapiResponse<Planet> | null>(null);
