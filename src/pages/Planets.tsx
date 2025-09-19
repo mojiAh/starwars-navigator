@@ -1,20 +1,57 @@
 import { Link, useSearchParams } from 'react-router-dom';
+
 import { usePlanets } from '../hooks/useSwapi';
+
+import type { Planet } from '../types';
+
+function Sort({ sort, setSort }: { sort: string, setSort: (s: string) => void }) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <span>Sort By:</span>
+      <select value={sort} onChange={(e) => setSort(e.target.value)}>
+        <option value="name">Name</option>
+        <option value="population">Population (numeric)</option>
+      </select>
+    </div>
+  );
+}
 
 export default function Planets() {
   const [params, setParams] = useSearchParams();
   const page = parseInt(params.get("page") || "1", 10);
+  const sort = params.get("sort") || "name";
 
   const { data, loading, error } = usePlanets({ page });
-  let results = data?.results || [];
+
+  const setSort = (newSort: string) => {
+    setParams((prev) => {
+      const p = new URLSearchParams(prev);
+      p.set("sort", newSort);
+      return p;
+    });
+  };
 
   const goPage = (newPage: number) => {
-    setParams({ page: String(newPage) });
+    setParams((prev) => {
+      const p = new URLSearchParams(prev);
+      p.set("page", newPage.toString());
+      return p;
+    });
   };
+
+  let results: Planet[] = data?.results || [];
+  if (sort === "name") results = [...results].sort((a, b) => a.name.localeCompare(b.name));
+  if (sort === "population")
+    results = [...results].sort((a, b) => {
+      const pa = isNaN(Number(a.population)) ? -1 : Number(a.population);
+      const pb = isNaN(Number(b.population)) ? -1 : Number(b.population);
+      return pb - pa;
+    });
 
   return (
     <div>
       <h1>Planets</h1>
+      <Sort sort={sort} setSort={setSort} />
       {loading && <div>Loading planets…</div>}
       {error && <div>Error loading: {error.message}</div>}
       {results.map(p => {
