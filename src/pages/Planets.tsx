@@ -50,7 +50,6 @@ export default function Planets() {
     });
   };
 
-
   const setSort = (newSort: string) => {
     setParams((prev) => {
       const p = new URLSearchParams(prev);

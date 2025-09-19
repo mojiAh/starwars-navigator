@@ -6,13 +6,28 @@ import { useCharacters } from '../hooks/useSwapi';
 
 import type { Planet } from '../types';
 
-function Sort({ sort, setSort }: { sort: string, setSort: (s: string) => void }) {
+function SortAndSearch({
+    sort,
+    setSort,
+    search,
+    setSearch
+}: {
+    sort?: string,
+    setSort: (s: string) => void,
+    search: string,
+    setSearch: (s: string) => void
+}) {
     return (
         <div style={{ marginBottom: 12 }}>
+            <input
+                placeholder="Search characters"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ marginRight: 8 }}
+            />
             <span>Sort By:</span>
             <select value={sort} onChange={(e) => setSort(e.target.value)}>
                 <option value="name">Name</option>
-                // TODO: add sort by homeworld
             </select>
         </div>
     );
@@ -44,8 +59,19 @@ export default function Characters() {
     const [params, setParams] = useSearchParams();
     const page = parseInt(params.get("page") || "1", 10);
     const sort = params.get("sort") || "name";
+    const search = params.get("search") || "";
 
-    const { data, loading, error } = useCharacters({ page });
+    const { data, loading, error } = useCharacters({ page, search });
+
+    const setSearch = (s: string) => {
+        setParams((prev) => {
+            const p = new URLSearchParams(prev);
+            if (s) p.set("search", s);
+            else p.delete("search");
+            p.set("page", "1");
+            return p;
+        });
+    };
 
     const setSort = (newSort: string) => {
         setParams((prev) => {
@@ -65,7 +91,7 @@ export default function Characters() {
     return (
         <div>
             <h1>Characters</h1>
-            <Sort sort={sort} setSort={setSort} />
+            <SortAndSearch sort={sort} setSort={setSort} search={search} setSearch={setSearch} />
             {loading && <div>Loading Characters…</div>}
             {error && <div>Error loading: {error.message}</div>}
             {results.map(c => {

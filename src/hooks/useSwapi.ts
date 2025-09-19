@@ -28,7 +28,7 @@ export function usePlanets({ page = 1, search = "" }: { page?: number; search?: 
     return { data, loading, error };
 }
 
-export function useCharacters({ page = 1 }: { page?: number; }) {
+export function useCharacters({ page = 1, search = "" }: { page?: number; search?: string; }) {
     const [data, setData] = useState<SwapiResponse<Character> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -36,7 +36,7 @@ export function useCharacters({ page = 1 }: { page?: number; }) {
     useEffect(() => {
         let alive = true;
         setLoading(true);
-        getCharacters({ page })
+        getCharacters({ page, search })
             .then((d) => {
                 if (alive) setData(d);
             })
@@ -49,7 +49,7 @@ export function useCharacters({ page = 1 }: { page?: number; }) {
         return () => {
             alive = false;
         };
-    }, [page]);
+    }, [page, search]);
     return { data, loading, error };
 }
 
