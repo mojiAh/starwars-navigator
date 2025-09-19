@@ -15,8 +15,11 @@ export function clearCache() {
   simpleCache.clear();
 }
 
-export async function getPlanets({ page = 1 }: { page?: number }) {
-  return fetchJson<SwapiResponse<Planet>>(`https://swapi.py4e.com/api/planets/${page > 1 ? `?page=${page}` : ''}`);
+export async function getPlanets({ page = 1, search = "" }: { page?: number; search?: string }) {
+  const q = new URLSearchParams();
+  if (search) q.set("search", search);
+  q.set("page", page.toString());
+  return fetchJson<SwapiResponse<Planet>>(`https://swapi.py4e.com/api/planets/?${q.toString()}`);
 }
 
 export async function getCharacters({ page = 1 }: { page?: number }) {
