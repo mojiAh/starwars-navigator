@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { fetchJson } from '../api/swapi';
 import type { Planet, Character, Film } from '../types';
 
@@ -39,7 +39,7 @@ export default function PlanetDetails() {
         Promise.all(
             planet.residents.map((url) =>
                 (fetchJson(url).catch(() => ({ error: true })) as Promise<Character | { error: true }>)))
-            .then((arr) => { 
+            .then((arr) => {
                 if (alive) setResidentsData(arr);
             });
 
@@ -71,9 +71,9 @@ export default function PlanetDetails() {
                 <ul>
                     {filmsData.map((film, i) =>
                         "error" in film ? (
-                        <li key={i}>Error loading movie</li>
+                            <li key={i}>Error loading movie</li>
                         ) : (
-                        <li key={i}>{film.title}</li>
+                            <li key={i}>{film.title}</li>
                         )
                     )}
                 </ul>}
@@ -82,17 +82,21 @@ export default function PlanetDetails() {
             {
                 planet.residents.length === 0 ? (
                     <div>No known residents</div>
-                ) : 
-                residentsData.length === 0 ? <div>Loading Residents…</div> :
-                    <ul>
-                        {residentsData.map((resident, i) =>
-                            "error" in resident ? (
-                            <li key={i}>Error loading resident</li>
-                            ) : (
-                            <li key={i}>{resident.name}</li>
-                            )
-                        )}
-                    </ul>
+                ) :
+                    residentsData.length === 0 ? <div>Loading Residents…</div> :
+                        <ul>
+                            {residentsData.map((resident, i) =>
+                                "error" in resident ? (
+                                    <li key={i}>Error loading resident</li>
+                                ) : (
+                                    <li key={i}>
+                                        <Link to={`/characters/${resident.url.split("/").filter(Boolean).pop()}`}>
+                                            {resident.name}
+                                        </Link>
+                                    </li>
+                                )
+                            )}
+                        </ul>
             }
         </div>
     );
