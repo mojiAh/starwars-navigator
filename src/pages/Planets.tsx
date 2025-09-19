@@ -4,7 +4,7 @@ import { usePlanets } from '../hooks/useSwapi';
 
 import type { Planet } from '../types';
 
-function Sort({ sort, setSort }: { sort: string, setSort: (s: string) => void }) {
+function Sort({ sort, setSort }: { sort?: string, setSort: (s: string) => void }) {
   return (
     <div style={{ marginBottom: 12 }}>
       <span>Sort By:</span>
@@ -19,7 +19,7 @@ function Sort({ sort, setSort }: { sort: string, setSort: (s: string) => void })
 export default function Planets() {
   const [params, setParams] = useSearchParams();
   const page = parseInt(params.get("page") || "1", 10);
-  const sort = params.get("sort") || "name";
+  const sort = params.get("sort") || undefined;
 
   const { data, loading, error } = usePlanets({ page });
 
