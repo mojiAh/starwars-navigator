@@ -1,40 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+
+import { useCharacterDetails } from '../hooks/useSwapi';
 import { fetchJson } from '../api/swapi';
-import type { Character, Starship, Film, Planet } from '../types';
+import type { Starship, Film, Planet } from '../types';
 
 export default function CharacterDetails() {
-    const [character, setCharacter] = useState<Character | null>(null);
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
+    const navigate = useNavigate();
 
     const [starshipsData, setStarshipssData] = useState<(Starship | { error: true })[]>([]);
     const [filmsData, setFilmsData] = useState<(Film | { error: true })[]>([]);
     const [planetData, setPlanetData] = useState<Planet | { error: true } | null>(null);
 
     const { id } = useParams();
-    const characterUrl = `https://swapi.py4e.com/api/people/${id}/`;
-    const navigate = useNavigate();
+    const { data: character, loading, error } = useCharacterDetails(id);
 
-    useEffect(() => {
-        async function fetchCharacterDetails() {
-            try {
-                setLoading(true);
-                const response = await fetch(characterUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const json = await response.json();
-                setCharacter(json);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchCharacterDetails();
-    }, []);
 
     useEffect(() => {
         let alive = true;

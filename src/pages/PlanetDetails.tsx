@@ -1,39 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+
+import { usePlanetDetails } from '../hooks/useSwapi';
 import { fetchJson } from '../api/swapi';
-import type { Planet, Character, Film } from '../types';
+import type { Character, Film } from '../types';
 
 export default function PlanetDetails() {
     const navigate = useNavigate();
-    const [planet, setPlanet] = useState<Planet | null>(null);
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
 
     const [residentsData, setResidentsData] = useState<(Character | { error: true })[]>([]);
     const [filmsData, setFilmsData] = useState<(Film | { error: true })[]>([]);
 
     const { id } = useParams();
-    const planetUrl = `https://swapi.py4e.com/api/planets/${id}/`;
+    const { data: planet, loading, error } = usePlanetDetails(id);
 
-    useEffect(() => {
-        async function fetchPlanetDetails() {
-            try {
-                setLoading(true);
-                const response = await fetch(planetUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const json = await response.json();
-                setPlanet(json);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchPlanetDetails();
-    }, []);
 
     useEffect(() => {
         let alive = true;

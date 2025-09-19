@@ -1,38 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+
+import { useStarshipDetails } from '../hooks/useSwapi';
 import { fetchJson } from '../api/swapi';
-import type { Character, Starship, Film, Planet } from '../types';
+import type { Film } from '../types';
 
 export default function StarshipDetails() {
-    const [starship, setStarship] = useState<Starship | null>(null);
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
+    const navigate = useNavigate();
 
     const [filmsData, setFilmsData] = useState<(Film | { error: true })[]>([]);
 
     const { id } = useParams();
-    const starshipUrl = `https://swapi.py4e.com/api/starships/${id}/`;
-    const navigate = useNavigate();
+    const { data: starship, loading, error } = useStarshipDetails(id);
 
-    useEffect(() => {
-        async function fetchStarshipDetails() {
-            try {
-                setLoading(true);
-                const response = await fetch(starshipUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const json = await response.json();
-                setStarship(json);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchStarshipDetails();
-    }, []);
 
     useEffect(() => {
         let alive = true;
