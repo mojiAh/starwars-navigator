@@ -15,19 +15,36 @@ export default function Starships() {
     };
 
     return (
-        <div>
-            <h1>Starships</h1>
-            {loading && <div>Loading Straships…</div>}
-            {error && <div>Error loading: {error.message}</div>}
-            {results.map(s => {
-                const id = s.url.split('/').filter(Boolean).pop();
-                return (
-                    <div key={s.name} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
-                        <Link to={`/starships/${id}`}><strong>{s.name}</strong></Link>
-                        <div>Model: {s.model}</div>
-                    </div>
-                );
-            })}
+        <div className="space-y-3">
+            <h1 className="text-xl font-semibold text-gray-800">Starships</h1>
+            {loading && (
+                <div className="text-sm text-gray-600">Loading Straships…</div>
+            )}
+            {error && (
+                <div className="text-sm text-red-600">
+                    Error loading: {error.message}
+                </div>
+            )}
+            <div className="space-y-2">
+                {results.map(s => {
+                    const id = s.url.split('/').filter(Boolean).pop();
+                    return (
+                        <div
+                            key={s.name}
+                            className="rounded-md border border-gray-200 p-2 hover:bg-gray-50">
+                            <Link
+                                to={`/starships/${id}`}
+                                className="text-blue-600 hover:underline">
+                                <strong>{s.name}</strong>
+                            </Link>
+                            <div className="text-sm text-gray-600">
+                                <span className="font-medium">Model:</span>
+                                {s.model}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
             <Pagination
                 page={page}
                 hasPrev={!!data?.previous}

@@ -22,50 +22,74 @@ export default function CharacterDetails() {
     if (!character) return <div>No character found</div>;
 
     return (
-        <div>
-            <button onClick={() => navigate(-1)} style={{ marginBottom: 12 }}>← Back</button>
-            <h2>{character.name}</h2>
+        <div className="space-y-4">
+            <div className="flex items-start gap-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex items-center gap-1 px-3 mt-1 py-1.5 text-sm rounded border border-gray-200 text-gray-700 hover:bg-gray-50">
+                    ← Back
+                </button>
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900">
+                {character.name}
+            </h2>
 
-            <strong>Homeworld:</strong>
-            {!character.homeworld ? (<div>No known Planet</div>) :
-                planetLoading ? <div>Loading Planet…</div> :
-                    (() => {
-                        const id = homeworldUrl[0].split("/").filter(Boolean).pop();
-                        const title = getPlaneName(homeworldUrl[0]);
-                        return (<Link to={`/planets/${id}`}>
-                            {title || 'Unknown'}
-                        </Link>)
-                    })()
+            <div className="text-sm text-gray-700">
+                <span className="font-medium">Homeworld:</span>{" "}
+                {!character.homeworld ? (
+                    <span className="text-gray-600">No known Planet</span>
+                ) : planetLoading ? (
+                    <span className="text-gray-600">Loading Planet…</span>
+                ) : (() => {
+                    const id = homeworldUrl[0].split("/").filter(Boolean).pop();
+                    const title = getPlaneName(homeworldUrl[0]);
+                    return (
+                        <Link to={`/planets/${id}`} className="text-blue-600 hover:underline">
+                            {title || "Unknown"}
+                        </Link>
+                    );
+                })()}
+            </div>
 
-            }
-
-            <h3>Starships</h3>
-            {starshipUrls.length === 0 ? (<div>No known starships</div>) :
-                starshipsLoading ? <div>Loading Starships…</div> :
-                    <ul>
+            <div className="space-y-2">
+                <h3 className="text-lg font-medium text-gray-900">Starships</h3>
+                {starshipUrls.length === 0 ? (
+                    <div className="text-sm text-gray-600">No known starships</div>
+                ) : starshipsLoading ? (
+                    <div className="text-sm text-gray-600">Loading Starships…</div>
+                ) : (
+                    <ul className="pl-5 space-y-1 text-sm text-gray-700">
                         {starshipUrls.map((url) => {
                             const id = url.split("/").filter(Boolean).pop();
                             const title = getStarshipName(url);
                             return (
                                 <li key={id}>
-                                    <Link to={`/starships/${id}`}>
-                                        {title || 'Unknown'}
+                                    <Link to={`/starships/${id}`} className="text-blue-600 hover:underline">
+                                        {title || "Unknown"}
                                     </Link>
                                 </li>
-                            )
+                            );
                         })}
-                    </ul>}
+                    </ul>
+                )}
+            </div>
 
-            <h3>Movies</h3>
-            {filmUrls.length === 0 ? (<div>No movies found</div>) :
-                filmsLoading ? (<div>Loading movies…</div>) :
-                    <ul>
+            <div className="space-y-2">
+                <h3 className="text-lg font-medium text-gray-900">Movies</h3>
+                {filmUrls.length === 0 ? (
+                    <div className="text-sm text-gray-600">No movies found</div>
+                ) : filmsLoading ? (
+                    <div className="text-sm text-gray-600">Loading movies…</div>
+                ) : (
+                    <ul className="pl-5 space-y-1 text-sm text-gray-700">
                         {filmUrls.map((url) => {
                             const id = url.split("/").filter(Boolean).pop();
                             const title = getFilmTitle(url);
-                            return <li key={id}>{title || 'Unknown'}</li>;
+                            return <li key={id}>{title || "Unknown"}</li>;
                         })}
-                    </ul>}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 }

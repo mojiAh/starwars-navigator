@@ -29,7 +29,9 @@ export default function PlanetDetails() {
                     ← Back
                 </button>
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900">{planet.name}</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+                {planet.name}
+            </h2>
             <div className="rounded-md border border-gray-200 p-4">
                 <div className="text-sm text-gray-700">
                     <span className="font-medium">Population:</span> {planet.population}

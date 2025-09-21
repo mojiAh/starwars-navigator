@@ -77,11 +77,18 @@ export default function Planets() {
         {results.map(p => {
           const id = p.url.split('/').filter(Boolean).pop();
           return (
-            <div key={p.name} className="rounded-md border border-gray-200 p-2 hover:bg-gray-50">
-              <Link to={`/planets/${id}`} className="text-blue-600 hover:underline"><strong>{p.name}</strong></Link>
+            <div
+              key={p.name}
+              className="rounded-md border border-gray-200 p-2 hover:bg-gray-50">
+              <Link
+                to={`/planets/${id}`}
+                className="text-blue-600 hover:underline">
+                <strong>{p.name}</strong>
+              </Link>
               <div className="text-sm text-gray-600">
                 <span className="font-medium">Population:</span>
-                {p.population}</div>
+                {p.population}
+              </div>
             </div>
           );
         })}

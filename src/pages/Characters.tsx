@@ -47,8 +47,8 @@ export default function Characters() {
     }
 
     return (
-        <div>
-            <h1>Characters</h1>
+        <div className="space-y-3">
+            <h1 className="text-xl font-semibold text-gray-800">Characters</h1>
             <SortAndSearch
                 placeholder="Search characters"
                 sort={sort}
@@ -60,28 +60,45 @@ export default function Characters() {
                     { value: "homeworld", label: "Homeworld" },
                 ]}
             />
-            {loading && <div>Loading Characters…</div>}
-            {error && <div>Error loading: {error.message}</div>}
-            {results.map(c => {
-                const id = c.url.split('/').filter(Boolean).pop();
-                const name = getName(c.homeworld);
-                return (
-                    <div key={c.name} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
-                        <Link to={`/characters/${id}`}><strong>{c.name}</strong></Link>
-                        <div><strong>Homeworld:</strong>
-                            {!name
-                                ? "Loading…"
-                                : name === "Unknown"
-                                    ? "Error loading planet"
-                                    : (
-                                        <Link to={`/planets/${c.homeworld.split("/").filter(Boolean).pop()}`}>
-                                            {name}
-                                        </Link>
-                                    )}
+            {loading && (
+                <div className="text-sm text-gray-600">Loading Characters…</div>
+            )}
+            {error && (
+                <div className="text-sm text-red-600">
+                    Error loading: {error.message}
+                </div>
+            )}
+            <div className="space-y-2">
+                {results.map(c => {
+                    const id = c.url.split('/').filter(Boolean).pop();
+                    const name = getName(c.homeworld);
+                    return (
+                        <div
+                            key={c.name}
+                            className="rounded-md border border-gray-200 p-2 hover:bg-gray-50">
+                            <Link
+                                to={`/characters/${id}`}
+                                className="text-blue-600 hover:underline">
+                                <strong>{c.name}</strong>
+                            </Link>
+                            <div className="text-sm text-gray-600">
+                                <span className="font-medium">Homeworld:</span>
+                                {!name
+                                    ? "Loading…"
+                                    : name === "Unknown"
+                                        ? "Error loading planet"
+                                        : (
+                                            <Link
+                                                to={`/planets/${c.homeworld.split("/").filter(Boolean).pop()}`}
+                                                className="text-blue-600 hover:underline">
+                                                {name}
+                                            </Link>
+                                        )}
+                            </div>
                         </div>
-                    </div>
-                );
-            })}
+                    );
+                })}
+            </div>
             <Pagination
                 page={page}
                 hasPrev={!!data?.previous}
