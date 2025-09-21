@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom';
 
-import { useCharacters, usePlanetNames } from '../hooks/useSwapi';
+import { useCharacters, useResourceNames } from '../hooks/useSwapi';
 
 function SortAndSearch({
     sort,
@@ -62,7 +62,7 @@ export default function Characters() {
 
     let results = data?.results || [];
     const homeworlds = results.map(c => c.homeworld).filter(Boolean) as string[];
-    const { getName } = usePlanetNames(homeworlds);
+    const { getName } = useResourceNames(homeworlds);
 
     if (sort === "name") results = [...results].sort((a, b) => a.name.localeCompare(b.name));
     if (sort === "homeworld") {

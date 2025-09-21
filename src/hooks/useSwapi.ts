@@ -168,36 +168,39 @@ export function useStarshipDetails(id?: string) {
     return { data, loading, error };
 }
 
-export function usePlanetNames(urls: string[]) {
-    const [planetCache, setPlanetCache] = useState<Map<string, string>>(new Map());
+export function useResourceNames(urls: string[]) {
+    const [cache, setCache] = useState<Map<string, string>>(new Map());
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!urls || urls.length === 0) return;
 
-        const missing = urls.filter((u) => !planetCache.has(u));
+        const missing = urls.filter((u) => !cache.has(u));
         if (missing.length === 0) return;
 
         setLoading(true);
         Promise.all(
             missing.map((url) =>
-                (fetchJson(url) as Promise<Planet>)
-                    .then((p) => ({ url, name: p.name }))
+                fetchJson(url)
+                    .then((data) => {
+                        const d = data as { name?: string; title?: string };
+                        return { url, name: d.name || d.title || "Unknown" };
+                    })
                     .catch(() => ({ url, name: "Unknown" }))
             )
         ).then((results) => {
-            setPlanetCache((prev) => {
+            setCache((prev) => {
                 const copy = new Map(prev);
                 results.forEach(({ url, name }) => copy.set(url, name));
                 return copy;
             });
             setLoading(false);
         });
-    }, [urls]);
+    }, [urls, cache]);
 
     const getName = useCallback(
-        (url: string) => planetCache.get(url) ?? null,
-        [planetCache]
+        (url: string) => cache.get(url) ?? null,
+        [cache]
     );
 
     return { getName, loading };
