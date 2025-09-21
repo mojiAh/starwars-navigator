@@ -1,37 +1,10 @@
 import { Link, useSearchParams } from 'react-router-dom';
 
-import { Pagination } from '../components';
+import { Pagination, SortAndSearch } from '../components';
 import { usePlanets } from '../hooks';
 
 import type { Planet } from '../types';
 
-function SortAndSearch({
-  sort,
-  setSort,
-  search,
-  setSearch
-}: {
-  sort?: string,
-  setSort: (s: string) => void,
-  search: string,
-  setSearch: (s: string) => void
-}) {
-  return (
-    <div style={{ marginBottom: 12 }}>
-      <input
-        placeholder="Search planets"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ marginRight: 8 }}
-      />
-      <span>Sort By:</span>
-      <select value={sort} onChange={(e) => setSort(e.target.value)}>
-        <option value="name">Name</option>
-        <option value="population">Population (numeric)</option>
-      </select>
-    </div>
-  );
-}
 
 export default function Planets() {
   const [params, setParams] = useSearchParams();
@@ -79,7 +52,17 @@ export default function Planets() {
   return (
     <div>
       <h1>Planets</h1>
-      <SortAndSearch sort={sort} setSort={setSort} search={search} setSearch={setSearch} />
+      <SortAndSearch
+        placeholder="Search planets"
+        sort={sort}
+        setSort={setSort}
+        search={search}
+        setSearch={setSearch}
+        sortOptions={[
+          { value: "name", label: "Name" },
+          { value: "population", label: "Population" },
+        ]}
+      />
       {loading && <div>Loading planets…</div>}
       {error && <div>Error loading: {error.message}</div>}
       {results.map(p => {
