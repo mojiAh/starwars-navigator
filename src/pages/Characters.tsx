@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom';
 
-import { useCharacters, useResourceNames } from '../hooks/useSwapi';
+import { useCharacters, useResourceNames } from '../hooks';
 
 function SortAndSearch({
     sort,
