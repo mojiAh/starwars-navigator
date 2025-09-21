@@ -50,8 +50,8 @@ export default function Planets() {
     });
 
   return (
-    <div>
-      <h1>Planets</h1>
+    <div className="space-y-3">
+      <h1 className="text-xl font-semibold text-gray-800">Planets</h1>
       <SortAndSearch
         placeholder="Search planets"
         sort={sort}
@@ -63,17 +63,29 @@ export default function Planets() {
           { value: "population", label: "Population" },
         ]}
       />
-      {loading && <div>Loading planets…</div>}
-      {error && <div>Error loading: {error.message}</div>}
-      {results.map(p => {
-        const id = p.url.split('/').filter(Boolean).pop();
-        return (
-          <div key={p.name} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
-            <Link to={`/planets/${id}`}><strong>{p.name}</strong></Link>
-            <div>Population: {p.population}</div>
-          </div>
-        );
-      })}
+      {loading && (
+        <div className="text-sm text-gray-600">Loading planets…</div>
+      )}
+
+      {error && (
+        <div className="text-sm text-red-600">
+          Error loading: {error.message}
+        </div>
+      )}
+
+      <div className="space-y-2">
+        {results.map(p => {
+          const id = p.url.split('/').filter(Boolean).pop();
+          return (
+            <div key={p.name} className="rounded-md border border-gray-200 p-2 hover:bg-gray-50">
+              <Link to={`/planets/${id}`} className="text-blue-600 hover:underline"><strong>{p.name}</strong></Link>
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">Population:</span>
+                {p.population}</div>
+            </div>
+          );
+        })}
+      </div>
       <Pagination
         page={page}
         hasPrev={!!data?.previous}
