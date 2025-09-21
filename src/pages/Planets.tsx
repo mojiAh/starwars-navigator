@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom';
 
-import { usePlanets } from '../hooks/useSwapi';
+import { Pagination } from '../components';
+import { usePlanets } from '../hooks';
 
 import type { Planet } from '../types';
 
@@ -90,15 +91,12 @@ export default function Planets() {
           </div>
         );
       })}
-      <div style={{ marginTop: 12 }}>
-        <button onClick={() => goPage(Math.max(1, page - 1))} disabled={!data?.previous}>
-          Previous
-        </button>
-        <span style={{ margin: "0 8px" }}>Page {page}</span>
-        <button onClick={() => goPage(page + 1)} disabled={!data?.next}>
-          Next
-        </button>
-      </div>
+      <Pagination
+        page={page}
+        hasPrev={!!data?.previous}
+        hasNext={!!data?.next}
+        onPageChange={goPage}
+      />
     </div>
   );
 }

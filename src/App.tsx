@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { Navbar } from './components';
 import Planets from './pages/Planets';
 import Characters from './pages/Characters';
 import Starships from './pages/Starships';
