@@ -1,42 +1,20 @@
-import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import { usePlanetDetails } from '../hooks/useSwapi';
-import { fetchJson } from '../api/swapi';
-import type { Character, Film } from '../types';
+import { usePlanetDetails, useResourceNames } from '../hooks';
 
 export default function PlanetDetails() {
     const navigate = useNavigate();
 
-    const [residentsData, setResidentsData] = useState<(Character | { error: true })[]>([]);
-    const [filmsData, setFilmsData] = useState<(Film | { error: true })[]>([]);
 
     const { id } = useParams();
     const { data: planet, loading, error } = usePlanetDetails(id);
 
+    const filmUrls = planet ? planet.films : [];
+    const { getName: getFilmTitle, loading: filmsLoading } = useResourceNames(filmUrls);
 
-    useEffect(() => {
-        let alive = true;
-        if (!planet) return;
+    const residentUrls = planet ? planet.residents : [];
+    const { getName: getResidentName, loading: residentsLoading } = useResourceNames(residentUrls);
 
-        Promise.all(
-            planet.residents.map((url) =>
-                (fetchJson(url).catch(() => ({ error: true })) as Promise<Character | { error: true }>)))
-            .then((arr) => {
-                if (alive) setResidentsData(arr);
-            });
-
-        Promise.all(
-            planet.films.map((url) =>
-                (fetchJson(url).catch(() => ({ error: true })) as Promise<Film | { error: true }>)))
-            .then((arr) => {
-                if (alive) setFilmsData(arr);
-            });
-
-        return () => {
-            alive = false;
-        };
-    }, [planet]);
 
     if (loading) return <div>Loading planet…</div>;
     if (error) return <div>Error: {error.message}</div>;
@@ -50,36 +28,28 @@ export default function PlanetDetails() {
             <div><strong>Climate:</strong> {planet.climate}</div>
 
             <h3>Movies</h3>
-            {filmsData.length === 0 ? <div>Loading movies…</div> :
-                <ul>
-                    {filmsData.map((film, i) =>
-                        "error" in film ? (
-                            <li key={i}>Error loading movie</li>
-                        ) : (
-                            <li key={i}>{film.title}</li>
-                        )
-                    )}
-                </ul>}
+            {filmUrls.length === 0 ? (<div>No movies found</div>) :
+                filmsLoading ? (<div>Loading movies…</div>) :
+                    <ul>
+                        {filmUrls.map((url) => {
+                            const id = url.split("/").filter(Boolean).pop();
+                            const title = getFilmTitle(url);
+                            return <li key={id}>{title || 'Unknown'}</li>;
+                        })}
+                    </ul>}
 
             <h3>Residents</h3>
-            {
-                planet.residents.length === 0 ? (
-                    <div>No known residents</div>
-                ) :
-                    residentsData.length === 0 ? <div>Loading Residents…</div> :
-                        <ul>
-                            {residentsData.map((resident, i) =>
-                                "error" in resident ? (
-                                    <li key={i}>Error loading resident</li>
-                                ) : (
-                                    <li key={i}>
-                                        <Link to={`/characters/${resident.url.split("/").filter(Boolean).pop()}`}>
-                                            {resident.name}
-                                        </Link>
-                                    </li>
-                                )
-                            )}
-                        </ul>
+            {residentUrls.length === 0 ? (<div>No known residents</div>) :
+                residentsLoading ? (<div>Loading residents…</div>) :
+                    <ul>
+                        {residentUrls.map((url) => {
+                            const id = url.split("/").filter(Boolean).pop();
+                            const resident = getResidentName(url);
+                            return <li key={id}>
+                                <Link to={`/characters/${id}`}>{resident || 'Uknown'}</Link>
+                            </li>;
+                        })}
+                    </ul>
             }
         </div>
     );
