@@ -1,69 +1,62 @@
-# React + TypeScript + Vite
+# Star Wars Navigator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript + Vite application for browsing the Star Wars universe.  
+It uses the [SWAPI](https://swapi.py4e.com/) API to display **planets**, **characters**, and **starships**, with searchable and sortable lists.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Planets**
+  - Browse all planets with name & population.
+  - View planet details: population, climate, films, and residents.
+  - Residents link to their character details.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Characters**
+  - Browse all characters with name & homeworld.
+  - View character details: homeworld, starships, and films.
+  - Starships and planets are cross-linked.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Starships**
+  - Browse all starships with name & model.
+  - View starship details: model, crew size, and films.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Shared functionality**
+  - Search & sort lists (by name, homeworld, etc.).
+  - Pagination via SWAPI.
+  - Reusable components (`ResourceList`, `Pagination`).
+  - Reusable hooks (`useCharacters`, `useResourceNames`, etc.).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## Tech Stack
+
+- [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)  
+- [Vite](https://vitejs.dev/) for fast dev/build  
+- [React Router](https://reactrouter.com/) for navigation  
+- [Jest](https://jestjs.io/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) for testing  
+- ESLint + TypeScript rules for code quality  
+
+---
+
+## Getting Started
+
+### 1. Install dependencies
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Run locally
+```bash
+npm run dev
+```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 3. Build for production
+```bash
+npm run build
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 4. Run tests
+```bash
+npm run test
 ```
