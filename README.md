@@ -34,7 +34,7 @@ It uses the [SWAPI](https://swapi.py4e.com/) API to display **planets**, **chara
 - [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)  
 - [Vite](https://vitejs.dev/) for fast dev/build  
 - [React Router](https://reactrouter.com/) for navigation  
-- [Jest](https://jestjs.io/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) for testing  
+- [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) for testing  
 - ESLint + TypeScript rules for code quality  
 
 ---
