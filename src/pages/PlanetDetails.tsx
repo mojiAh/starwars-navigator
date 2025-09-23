@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import { usePlanetDetails, useResourceNames } from '../hooks';
+import { ResourceList } from '../components';
 
 export default function PlanetDetails() {
     const navigate = useNavigate();
@@ -41,48 +42,22 @@ export default function PlanetDetails() {
                 </div>
             </div>
 
-            <div className="space-y-2">
-                <h3 className="text-lg font-medium text-gray-900">Movies</h3>
-                {filmUrls.length === 0 ? (
-                    <div className="text-sm text-gray-600">No movies found</div>
-                ) : filmsLoading ? (
-                    <div className="text-sm text-gray-600">Loading movies…</div>
-                ) : (
-                    <ul className="pl-5 space-y-1 text-sm text-gray-700">
-                        {filmUrls.map((url) => {
-                            const id = url.split("/").filter(Boolean).pop();
-                            const title = getFilmTitle(url);
-                            return <li key={id}>{title || "Unknown"}</li>;
-                        })}
-                    </ul>
-                )}
-            </div>
+            <ResourceList
+                title="Movies"
+                urls={filmUrls}
+                getName={getFilmTitle}
+                loading={filmsLoading}
+                emptyMessage="No movies found"
+            />
 
-            <div className="space-y-2">
-                <h3 className="text-lg font-medium text-gray-900">Residents</h3>
-                {residentUrls.length === 0 ? (
-                    <div className="text-sm text-gray-600">No known residents</div>
-                ) : residentsLoading ? (
-                    <div className="text-sm text-gray-600">Loading residents…</div>
-                ) : (
-                    <ul className="pl-5 space-y-1 text-sm text-gray-700">
-                        {residentUrls.map((url) => {
-                            const id = url.split("/").filter(Boolean).pop();
-                            const resident = getResidentName(url);
-                            return (
-                                <li key={id}>
-                                    <Link
-                                        to={`/characters/${id}`}
-                                        className="text-blue-600 hover:underline"
-                                    >
-                                        {resident || "Unknown"}
-                                    </Link>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                )}
-            </div>
+            <ResourceList
+                title="Residents"
+                urls={residentUrls}
+                getName={getResidentName}
+                loading={residentsLoading}
+                linkBase="/characters"
+                emptyMessage="No know residents"
+            />
         </div>
     );
 }

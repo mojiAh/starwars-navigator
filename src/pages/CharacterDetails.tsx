@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import { useCharacterDetails, useResourceNames } from '../hooks';
+import { ResourceList } from '../components';
 
 export default function CharacterDetails() {
     const navigate = useNavigate();
@@ -51,45 +52,22 @@ export default function CharacterDetails() {
                 })()}
             </div>
 
-            <div className="space-y-2">
-                <h3 className="text-lg font-medium text-gray-900">Starships</h3>
-                {starshipUrls.length === 0 ? (
-                    <div className="text-sm text-gray-600">No known starships</div>
-                ) : starshipsLoading ? (
-                    <div className="text-sm text-gray-600">Loading Starships…</div>
-                ) : (
-                    <ul className="pl-5 space-y-1 text-sm text-gray-700">
-                        {starshipUrls.map((url) => {
-                            const id = url.split("/").filter(Boolean).pop();
-                            const title = getStarshipName(url);
-                            return (
-                                <li key={id}>
-                                    <Link to={`/starships/${id}`} className="text-blue-600 hover:underline">
-                                        {title || "Unknown"}
-                                    </Link>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                )}
-            </div>
+            <ResourceList
+                title="Starships"
+                urls={starshipUrls}
+                getName={getStarshipName}
+                loading={starshipsLoading}
+                linkBase="/starships"
+                emptyMessage="No known starships"
+            />
 
-            <div className="space-y-2">
-                <h3 className="text-lg font-medium text-gray-900">Movies</h3>
-                {filmUrls.length === 0 ? (
-                    <div className="text-sm text-gray-600">No movies found</div>
-                ) : filmsLoading ? (
-                    <div className="text-sm text-gray-600">Loading movies…</div>
-                ) : (
-                    <ul className="pl-5 space-y-1 text-sm text-gray-700">
-                        {filmUrls.map((url) => {
-                            const id = url.split("/").filter(Boolean).pop();
-                            const title = getFilmTitle(url);
-                            return <li key={id}>{title || "Unknown"}</li>;
-                        })}
-                    </ul>
-                )}
-            </div>
+            <ResourceList
+                title="Movies"
+                urls={filmUrls}
+                getName={getFilmTitle}
+                loading={filmsLoading}
+                emptyMessage="No movies found"
+            />
         </div>
     );
 }
