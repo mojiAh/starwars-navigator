@@ -60,3 +60,22 @@ npm run build
 ```bash
 npm run test
 ```
+
+
+---
+
+## Possible Improvements
+
+- Use React Query (TanStack Query) for caching and background refetching.
+
+- Add UI polish (loading skeletons, spinners).
+
+- Implement virtualized lists for performance with large data.
+
+- Add end-to-end tests (Cypress).
+
+- Deploy via Vercel/Netlify.
+
+## License
+
+MIT — free to use and modify.
