@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react';
 
-import { getPlanets, getCharacters, getStarships, getPlanetByUrl, getCharacterByUrl, getStarshipByUrl } from '../api/swapi';
-import type { Planet, Character, Starship, SwapiResponse } from '../types';
+import {
+    getPlanets,
+    getCharacters,
+    getStarships,
+    getPlanetById,
+    getCharacterById,
+    getStarshipById
+} from '../api/swapi';
+import type {
+    Planet,
+    Character,
+    Starship,
+    SwapiResponse
+} from '../types';
 
 export function usePlanets({ page = 1, search = "" }: { page?: number; search?: string; }) {
     const [data, setData] = useState<SwapiResponse<Planet> | null>(null);
@@ -84,13 +96,11 @@ export function usePlanetDetails(id?: string) {
     const [loading, setLoading] = useState<boolean>(!!id);
     const [error, setError] = useState<Error | null>(null);
 
-    const url = id ? `https://swapi.py4e.com/api/planets/${id}/` : null;
-
     useEffect(() => {
-        if (!url) return;
+        if (!id) return;
         let alive = true;
         setLoading(true);
-        getPlanetByUrl(url)
+        getPlanetById(id)
             .then((d) => {
                 if (alive) setData(d);
             })
@@ -114,13 +124,11 @@ export function useCharacterDetails(id?: string) {
     const [loading, setLoading] = useState<boolean>(!!id);
     const [error, setError] = useState<Error | null>(null);
 
-    const url = id ? `https://swapi.py4e.com/api/people/${id}/` : null;
-
     useEffect(() => {
-        if (!url) return;
+        if (!id) return;
         let alive = true;
         setLoading(true);
-        getCharacterByUrl(url)
+        getCharacterById(id)
             .then((d) => {
                 if (alive) setData(d);
             })
@@ -144,13 +152,11 @@ export function useStarshipDetails(id?: string) {
     const [loading, setLoading] = useState<boolean>(!!id);
     const [error, setError] = useState<Error | null>(null);
 
-    const url = id ? `https://swapi.py4e.com/api/starships/${id}/` : null;
-
     useEffect(() => {
-        if (!url) return;
+        if (!id) return;
         let alive = true;
         setLoading(true);
-        getStarshipByUrl(url)
+        getStarshipById(id)
             .then((d) => {
                 if (alive) setData(d);
             })
